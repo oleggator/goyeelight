@@ -21,14 +21,14 @@ type Yeelight struct {
 type (
 	// Result struct is used on the standard response message
 	Result struct {
-		Status bool        `json:"status"`
-		Data   interface{} `json:"data"`
+		Status bool            `json:"status"`
+		Data   json.RawMessage `json:"data"`
 	}
 
 	// ResponseOk struct is used on the success responses
 	ResponseOk struct {
-		ID     int         `json:"id"`
-		Result interface{} `json:"result"`
+		ID     int             `json:"id"`
+		Result json.RawMessage `json:"result"`
 	}
 
 	// ResponseError struct is used on the error responses
@@ -87,9 +87,32 @@ func New(host, port string) *Yeelight {
 }
 
 // GetProp method is used to retrieve current property of smart LED.
-	cmd := `{"id":1,"method":"get_prop","params":[` + values + `]}`
-	return y.request(cmd)
 func (y *Yeelight) GetProp(values ...string) (map[string]string, error) {
+	cmd := `{"id":1,"method":"get_prop","params":[`
+	for _, value := range values {
+		cmd += `"` + string(value) + `",`
+	}
+	cmd += `]}`
+
+	res, err := y.request(cmd)
+	if err != nil {
+		return nil, err
+	}
+
+	props := make([]string, 0)
+	json.Unmarshal([]byte(res), &props)
+
+	if len(props) != len(values) {
+		err := errors.New("Wrong response")
+		return nil, err
+	}
+
+	m := make(map[string]string, 0)
+	for i, prop := range props {
+		m[values[i]] = prop
+	}
+
+	return m, nil
 }
 
 // SetCtAbx method is used to change the color temperature of a smart LED.
