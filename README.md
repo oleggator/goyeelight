@@ -25,26 +25,47 @@ go get github.com/nunows/goyeelight
 package main
 
 import "fmt"
-import "github.com/nunows/goyeelight"
+import "github.com/oleggator/goyeelight"
 
 func main() {
-      // new Yeelight instance
-      lamp := goyeelight.New("192.168.1.255", "55443")
+	// new Yeelight instance
+	lamp := goyeelight.New("192.168.0.27", "55443")
 
-      var r string
+	var (
+		r   string
+		err error
+		m   map[string]string
+	)
 
-      // turn on the smart LED
-      r = lamp.On()
-      fmt.Println(r)
-      // get the "power" and "bright" propertys
-      r = lamp.GetProp(`"power","bright"`)
-      fmt.Println(r)
-      // set the bright to 50
-      lamp.SetBright("50","smooth","500")
-      fmt.Println(r)
-      // turn off the smart LED
-      r = lamp.Off()
-      fmt.Println(r)
+	// turn on the smart LED
+	r, err = lamp.On()
+	if err != nil {
+		fmt.Println(err)
+	}
+	fmt.Println(r)
+
+	// get the "power" and "bright" propertys
+	m, err = lamp.GetProp("power", "bright")
+	if err != nil {
+		fmt.Println(err)
+	}
+	for prop, value := range m {
+		fmt.Println(prop, "=", value)
+	}
+
+	// set the bright to 50
+	lamp.SetBright("50", "smooth", "500")
+	if err != nil {
+		fmt.Println(err)
+	}
+	fmt.Println(r)
+
+	// turn off the smart LED
+	r, err = lamp.Off()
+	if err != nil {
+		fmt.Println(err)
+	}
+	fmt.Println(r)
 }
 ```
 
