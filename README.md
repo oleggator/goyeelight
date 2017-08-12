@@ -1,7 +1,7 @@
 # goyeelight
 Control the Yeelight LED Bulb with Go
 
-[![GoDoc](https://godoc.org/github.com/nunows/goyeelight?status.svg)](https://godoc.org/github.com/nunows/goyeelight)
+[![GoDoc](https://godoc.org/github.com/oleggator/goyeelight?status.svg)](https://godoc.org/github.com/oleggator/goyeelight)
 
 ## Usage
 
